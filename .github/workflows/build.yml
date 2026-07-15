@@ -10,11 +10,20 @@ jobs:
 
     steps:
 
-    - name: Checkout Godot
+    # Исходники Godot
+    - name: Checkout Godot source
       uses: actions/checkout@v4
       with:
         repository: godotengine/godot
         ref: 4.7.1-stable
+        path: godot-src
+
+
+    # Твой репозиторий с custom.py
+    - name: Checkout custom files
+      uses: actions/checkout@v4
+      with:
+        path: custom-template
 
 
     - name: Setup Python
@@ -27,18 +36,23 @@ jobs:
       run: pip install scons
 
 
-    - name: Add custom.py
+    # Кладем custom.py в исходники Godot
+    - name: Copy custom.py
       shell: cmd
-      run: copy %GITHUB_WORKSPACE%\custom.py .
+      run: |
+        copy custom-template\custom.py godot-src\custom.py
 
 
+    # Сборка
     - name: Build Windows template
+      working-directory: godot-src
       run: |
         scons platform=windows target=template_release production=yes
 
 
+    # Забираем результат
     - name: Upload template
       uses: actions/upload-artifact@v4
       with:
         name: godot-4.7.1-windows-template
-        path: bin/godot.windows.template_release.x86_64.exe
+        path: godot-src/bin/godot.windows.template_release.x86_64.exe

@@ -25,8 +25,3 @@ module_fbx_enabled = "no"
 
 # Game systems
 module_particles_enabled = "no"
-
-
-# Build dependencies
-accesskit = "no"
-d3d12 = "no"

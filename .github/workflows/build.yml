@@ -47,7 +47,7 @@ jobs:
     - name: Build Windows template
       working-directory: godot-src
       run: |
-        scons platform=windows target=template_release production=yes
+        scons platform=windows target=template_release production=yes d3d12=no accesskit=no
 
 
     # Забираем результат

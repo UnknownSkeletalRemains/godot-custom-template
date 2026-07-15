@@ -1,0 +1,44 @@
+name: Build Godot 4.7.1 Template
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+
+    runs-on: windows-latest
+
+    steps:
+
+    - name: Checkout Godot
+      uses: actions/checkout@v4
+      with:
+        repository: godotengine/godot
+        ref: 4.7.1-stable
+
+
+    - name: Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.x"
+
+
+    - name: Install SCons
+      run: pip install scons
+
+
+    - name: Add custom.py
+      shell: cmd
+      run: copy %GITHUB_WORKSPACE%\custom.py .
+
+
+    - name: Build Windows template
+      run: |
+        scons platform=windows target=template_release production=yes
+
+
+    - name: Upload template
+      uses: actions/upload-artifact@v4
+      with:
+        name: godot-4.7.1-windows-template
+        path: bin/godot.windows.template_release.x86_64.exe
